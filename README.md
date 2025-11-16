@@ -1,6 +1,8 @@
 # nix-darwin
 
-### File Structure: 
+### _File Structure_:
+
+```bash
 .
 ├── flake.lock
 ├── flake.nix
@@ -10,12 +12,13 @@
 │   │   ├── homebrew.nix
 │   │   └── packages.nix
 │   ├── home-manager
-│   │   ├── home.nix
+│   │   ├── home.nix # importer
 │   │   ├── starship.nix
 │   │   └── zsh.nix
 │   └── system
 │       ├── defaults.nix
 │       ├── dock.nix
 │       ├── finder.nix
-│       └── system.nix
+│       └── system.nix # importer
 └── README.md
+```
