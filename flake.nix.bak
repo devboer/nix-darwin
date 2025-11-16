@@ -1,0 +1,135 @@
+{
+  description = "devBoer's flake, curated from searches on the webs";
+
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    home-manager = {
+          url = "github:nix-community/home-manager";
+          inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-darwin = {
+         url = "github:LnL7/nix-darwin";
+         inputs.nixpkgs.follows = "nixpkgs";
+    };
+    nix-homebrew = {
+          url = "github:zhaofengli/nix-homebrew";
+    #      inputs.nixpkgs.follows = "nixpkgs";
+    #      inputs.nix-darwin.follows = "nix-darwin";
+    #      inputs.homebrewRegistry.follows = "homebrew";
+    };
+    # Homebrew taps
+        homebrew-core = {
+          url = "github:homebrew/homebrew-core";
+          flake = false;
+        };
+        homebrew-cask = {
+          url = "github:homebrew/homebrew-cask";
+          flake = false;
+        };
+        homebrew-services = {
+          url = "github:homebrew/homebrew-services";
+          flake = false;
+        };
+        homebrew-bundle = {
+          url = "github:homebrew/homebrew-bundle";
+          flake = false;
+        };
+        cone-tap = {
+          url = "github:conductorone/homebrew-cone";
+          flake = false;
+        };
+        nikitabobko-tap = {
+          # Contains aerospace
+          url = "github:nikitabobko/homebrew-tap";
+          flake = false;
+        };
+
+  };
+
+  outputs = inputs@ {
+    self,
+    home-manager,
+    nix-darwin,
+    nixpkgs,
+    nix-homebrew,
+    homebrew-core,
+    homebrew-cask,
+    homebrew-services,
+    homebrew-bundle,
+    cone-tap,
+    nikitabobko-tap,
+    ...
+  }:
+  let
+    configuration = { pkgs, ... }: {
+      homebrew = import ./modules/homebrew.nix;
+      environment.systemPackages = import ./modules/packages.nix { inherit pkgs; };
+      #nixpkgs.config.allowUnfree = true;
+      # Necessary for using flakes on this system.
+      nix.settings.experimental-features = "nix-command flakes";
+      
+      # Allow Unfree Software
+      nixpkgs.config.allowUnfree = true;
+      
+      # Enable rosetta binaries
+            nix.extraOptions = ''
+              extra-platforms = x86_64-darwin aarch64-darwin
+            '';
+
+      # Enable alternative shell support in nix-darwin.
+      programs.fish.enable = false;
+
+      # Set Git commit hash for darwin-version.
+      system.configurationRevision = self.rev or self.dirtyRev or null;
+
+      # Used for backwards compatibility, please read the changelog before changing.
+      # $ darwin-rebuild changelog
+      system.stateVersion = 5;
+      ids.gids.nixbld = 30000;
+      # The platform the configuration will be used on.
+      nixpkgs.hostPlatform = "aarch64-darwin";
+
+      # Enable Touch ID support
+      security.pam.services.sudo_local.touchIdAuth = true;
+
+      # Declaring primary user
+      system.primaryUser = "devboer";
+
+    };
+  in
+  {
+    # Build darwin flake using:
+    # $ darwin-rebuild build --flake .#macair
+    darwinConfigurations."macair" = nix-darwin.lib.darwinSystem {
+      modules = [
+          configuration
+          home-manager.darwinModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.devboer = import ./homeConfigs/home.nix;
+          }
+          nix-homebrew.darwinModules.nix-homebrew {
+              nix-homebrew = {
+                # Install Homebrew under the default prefix
+                enable = true;
+                # Apple Silicon Only: Also install Homebrew under the default Intel prefix for Rosetta 2
+                enableRosetta = true;
+                # User owning the Homebrew prefix
+                user = "devboer";
+                # Automatically migrate existing Homebrew installations
+                autoMigrate = true;
+                taps = {
+                  "conductorone/homebrew-cone" = cone-tap;
+                  "homebrew/homebrew-core" = homebrew-core;
+                  "homebrew/homebrew-cask" = homebrew-cask;
+                  "homebrew/homebrew-bundle" = homebrew-bundle;
+                  "nikitabobko/homebrew-tap" = nikitabobko-tap;
+                };
+                mutableTaps = true;
+              };
+          }
+      ];
+
+  };
+};
+}
