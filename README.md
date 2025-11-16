@@ -22,3 +22,9 @@
 │       └── system.nix # importer
 └── README.md
 ```
+
+### Goals:
+- [ ] Fully implement `defaults read` options into System.nix
+- [ ] Clean up flake.nix file after implementation
+- [ ] Import old shell configs and more into home-manager
+- [ ] Keep refactoring packages/homebrew options [[ **mas-cli doesn't work with MacOS 26** ]]
