@@ -11,7 +11,7 @@
     
     shellAliases = {
       # Nix shortcuts
-      nrs = "darwin-rebuild switch --flake ~/.config/nix-darwin";
+      nrs = "sudo darwin-rebuild switch --flake ~/.config/nix-darwin";
       nrb = "darwin-rebuild build --flake ~/.config/nix-darwin";
       
       # Common shortcuts

@@ -1,86 +1,77 @@
 { ... }:
 
 {
-  # Starship prompt configuration
+  # Starship prompt configuration - Prezto style
   programs.starship = {
     enable = true;
     enableZshIntegration = true;
     
     settings = {
-      # Add a newline before each prompt
-      add_newline = true;
+      # No newline before prompt
+      add_newline = false;
       
-      # Customize the format
-      format = "$all";
+      # Minimal left prompt
+      format = "$python$directory$character";
       
-      # Character indicator
+      # Move the rest to the right
+      right_format = "$status$all";
+      
+      # Character (prompt symbol)
       character = {
-        success_symbol = "[➜](bold green)";
-        error_symbol = "[➜](bold red)";
+        success_symbol = "[❯](red)[❯](yellow)[❯](green)";
+        error_symbol = "[❯](red)[❯](yellow)[❯](green)";
+        vicmd_symbol = "[❮](green)[❮](yellow)[❮](red)";
       };
       
-      # Directory display
+      # Directory
       directory = {
-        truncation_length = 3;
-        truncate_to_repo = true;
-        style = "bold cyan";
+        style = "blue";
+        truncation_length = 1;
+        truncation_symbol = "";
+        fish_style_pwd_dir_length = 1;
+      };
+      
+      # Python
+      python = {
+        format = "($virtualenv) ";
       };
       
       # Git branch
       git_branch = {
-        symbol = " ";
-        style = "bold purple";
+        format = "[$branch]($style) ";
+        style = "bold green";
       };
       
       # Git status
       git_status = {
-        style = "bold yellow";
-        conflicted = "🏳";
-        ahead = "⇡\${count}";
-        behind = "⇣\${count}";
-        diverged = "⇕⇡\${ahead_count}⇣\${behind_count}";
-        untracked = "🤷";
-        stashed = "📦";
-        modified = "📝";
-        staged = "[++($count)](green)";
-        renamed = "👅";
-        deleted = "🗑";
-      };
-      
-      # Programming languages
-      python = {
-        symbol = " ";
-        style = "yellow bold";
-      };
-      
-      nodejs = {
-        symbol = " ";
-        style = "green bold";
-      };
-      
-      rust = {
-        symbol = " ";
-        style = "red bold";
-      };
-      
-      # Nix shell indicator
-      nix_shell = {
-        symbol = " ";
-        style = "blue bold";
-        format = "via [$symbol$state]($style) ";
+        format = "$all_status$ahead_behind ";
+        ahead = "[⬆](bold purple) ";
+        behind = "[⬇](bold purple) ";
+        staged = "[✚](green) ";
+        deleted = "[✖](red) ";
+        renamed = "[➜](purple) ";
+        stashed = "[✭](cyan) ";
+        untracked = "[◼](white) ";
+        modified = "[✱](blue) ";
+        conflicted = "[═](yellow) ";
+        diverged = "⇕ ";
+        up_to_date = "";
       };
       
       # Command duration
       cmd_duration = {
-        min_time = 500;
-        format = "took [$duration](bold yellow) ";
+        format = "[$duration]($style) ";
       };
       
-      # Time
-      time = {
+      # Status
+      status = {
         disabled = false;
-        format = "🕙[$time]($style) ";
-        style = "bright-white";
+        symbol = "✘ ";
+      };
+      
+      # Line break
+      line_break = {
+        disabled = true;
       };
     };
   };

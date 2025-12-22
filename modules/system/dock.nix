@@ -18,7 +18,12 @@
     minimize-to-application = false;
     mru-spaces = false; # Don't auto-rearrange spaces
     expose-group-apps = true;
-    
+
+    # Pinned Applications
+    persistant-apps = [
+      "/Applications/Ghostty.app"
+      "/Applications/Dia.app"
+    ]
     # Hot corners
     wvous-bl-corner = 10; # Bottom-left: Put display to sleep
     wvous-bl-modifier = 0;

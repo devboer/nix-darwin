@@ -6,7 +6,9 @@
     ./dock.nix
     ./finder.nix
     ./defaults.nix
-    ./keyboard.nix
+   # ./keyboard.nix
+    ./trackpad.nix
+    ./controlcenter.nix
   ];
 
   # Additional system configuration
